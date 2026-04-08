@@ -9,6 +9,7 @@ function Login() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const dispatch = useDispatch();
@@ -20,8 +21,13 @@ function Login() {
     setMessage("");
 
     if (isRegister) {
+      if (password !== confirmPassword) {
+        setError("Passwords do not match.");
+        return;
+      }
+
       try {
-        await api.post("/register", { name, email, password });
+        await api.post("/register", { name, email, password, repeat_password: confirmPassword });
         setMessage("Registration successful. Please login.");
         setIsRegister(false);
       } catch (err) {
@@ -90,6 +96,19 @@ function Login() {
           />
         </label>
 
+        {isRegister && (
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700">Confirm Password</span>
+            <input
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              type="password"
+              required
+              className="mt-1 w-full rounded-xl border border-gray-300 px-4 py-2 focus:border-orange-400 focus:outline-none"
+            />
+          </label>
+        )}
+
         <button
           type="submit"
           className="w-full rounded-xl bg-orange-400 px-4 py-3 text-white transition hover:bg-orange-500"
@@ -108,6 +127,7 @@ function Login() {
                 setIsRegister(false);
                 setError("");
                 setMessage("");
+                setConfirmPassword("");
               }}
               className="font-semibold text-orange-500 hover:text-orange-600"
             >
@@ -123,6 +143,7 @@ function Login() {
                 setIsRegister(true);
                 setError("");
                 setMessage("");
+                setConfirmPassword("");
               }}
               className="font-semibold text-orange-500 hover:text-orange-600"
             >

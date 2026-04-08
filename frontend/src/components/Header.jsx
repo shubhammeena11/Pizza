@@ -20,7 +20,7 @@ function Header() {
   };
 
   const isAdmin = user?.role === "admin";
-  const isUser = user?.role === "user";
+  const isCustomer = user?.role === "customer";
 
   return (
     <>
@@ -58,7 +58,7 @@ function Header() {
           </>
         )}
 
-        {isUser && (
+        {isCustomer && (
           <NavLink
             to="/cart"
             className={({ isActive }) =>

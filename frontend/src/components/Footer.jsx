@@ -11,7 +11,7 @@ function Footer() {
               <img
                 src="../public/images/logo.png"
                 alt="logo"
-                className="h-8 w-8 mr-2"
+                className="h-8 w-16 mr-2"
               />
               <span className="text-xl font-bold">ERP System</span>
             </div>
