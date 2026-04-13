@@ -16,11 +16,13 @@ function Product() {
     setLoading(true);
     try {
       const res = await api.get(`/products/getall?page=${page}&limit=10`);
-      setProducts(res.data.data);
-      setTotalPages(res.data.totalPages);
+      setProducts(Array.isArray(res.data?.data) ? res.data.data : []);
+      setTotalPages(res.data?.totalPages ?? 1);
       setCurrentPage(page);
     } catch (err) {
       console.log(err);
+      setProducts([]);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
@@ -40,6 +42,8 @@ function Product() {
       fetchProducts(page);
     }
   };
+
+  const productList = Array.isArray(products) ? products : [];
 
   const renderPagination = () => {
     const pages = [];
@@ -138,12 +142,12 @@ function Product() {
             <div className="flex items-center justify-center w-full py-8">
               <p className="text-gray-600">Loading products...</p>
             </div>
-          ) : products.length === 0 ? (
+          ) : productList.length === 0 ? (
             <div className="flex items-center justify-center w-full py-8">
               <p className="text-gray-600">No products found.</p>
             </div>
           ) : (
-            products.map((item) => (
+            productList.map((item) => (
               <Card key={item._id} product={item} onProductDeleted={handleProductDeleted} />
             ))
           )}
