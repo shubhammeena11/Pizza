@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import api from "../api.js";
+import api, { getImageUrl } from "../api.js";
 
 function UpdateProduct() {
   const { id } = useParams();
@@ -131,7 +131,7 @@ function UpdateProduct() {
           {currentImage && (
             <div className="mt-2">
               <img
-                src={`http://localhost:5000/${currentImage}`}
+                src={getImageUrl(currentImage)}
                 alt="Current product"
                 className="h-40 w-40 rounded-2xl object-cover"
               />
