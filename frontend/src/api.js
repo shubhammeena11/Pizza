@@ -3,15 +3,6 @@ import { store } from "./redux/store.js";
 import { logout } from "./redux/authSlice.js";
 const API = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
 
-export const IMAGE_BASE_URL = API.replace(/\/api\/?$/, "");
-
-export const getImageUrl = (filePath) => {
-  if (!filePath) return "";
-  if (/^(https?:)\/\//i.test(filePath)) return filePath;
-  const trimmedPath = filePath.replace(/^\/+/, "");
-  return `${IMAGE_BASE_URL}/${trimmedPath}`;
-};
-
 const api = axios.create({
   baseURL: API,
 });

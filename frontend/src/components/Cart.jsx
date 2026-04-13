@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateQuantity, removeFromCart, clearCart } from '../redux/cartSlice'
-import { getImageUrl } from '../api.js'
 
 function Cart() {
   const cartItems = useSelector((state) => state.cart.items)
@@ -59,7 +58,7 @@ function Cart() {
           <div key={item.product._id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
             <div className="flex items-center space-x-4">
               <img
-                src={getImageUrl(item.product.image)}
+                src={item.product.image}
                 alt={item.product.name}
                 className="w-16 h-16 rounded-full object-cover"
               />

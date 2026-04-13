@@ -43,8 +43,6 @@ const productController = {
         return next(CustomErrorHandler.badRequest("Image is required"));
       }
 
-      const filepath = req.file.path.replace(/\\/g, "/");
-
       const schema = Joi.object({
         name: Joi.string().required(),
         price: Joi.number().required(),

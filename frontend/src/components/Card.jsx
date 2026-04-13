@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { addToCart } from '../redux/cartSlice'
-import api, { getImageUrl } from '../api.js'
+import api from '../api.js'
 
 function Card({product, onProductDeleted}) {
   const user = useSelector((state) => state.auth.user);
@@ -40,12 +40,12 @@ function Card({product, onProductDeleted}) {
   return (
     <>
       <div className='relative w-48 my-10'>
-        <img src={getImageUrl(product.image)} alt={product.name} className='object-cover object-center h-48 w-48 rounded-full' />
+        <img src={product.image} alt={product.name} className='object-cover object-center h-48 w-48 rounded-full' />
         
         {isAnimating && (
           <div className="absolute bottom-14 right-4 z-20 pointer-events-none">
             <img
-              src={getImageUrl(product.image)}
+              src={product.image}
               alt={product.name}
               className="w-16 h-16 rounded-full object-cover"
               style={{
