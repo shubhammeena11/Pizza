@@ -15,7 +15,7 @@ function Product() {
   const fetchProducts = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await api.get(`/products/getAll?page=${page}&limit=10`);
+      const res = await api.get(`/products/getall?page=${page}&limit=10`);
       setProducts(res.data.data);
       setTotalPages(res.data.totalPages);
       setCurrentPage(page);
