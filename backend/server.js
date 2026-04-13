@@ -1,7 +1,5 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
 
 import { APP_PORT } from "./config/index.js";
 import routes from "./routes/index.js";
@@ -12,17 +10,10 @@ import connectDB from "./config/DB.js";
 const app = express();
 connectDB();
 
-// Fix __dirname in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // ------------------ MIDDLEWARES ------------------
 app.use(cors());
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
-
-// ✅ STATIC FILES (IMPORTANT FOR IMAGES)
-app.use("/uploads", express.static(path.resolve("uploads")));
 
 // ------------------ ROUTES ------------------
 app.use("/api", routes);

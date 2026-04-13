@@ -1,29 +1,34 @@
+import { Readable } from "stream";
 import multer from "multer";
-import path from "path";
-import fs from "fs/promises";
 import Joi from "joi";
 import mongoose from "mongoose";
 
+import cloudinary from "../config/cloudinary.js";
 import { Product } from "../models/index.js";
 import CustomErrorHandler from "../services/CustomErrorHandler.js";
 
-// ---------------- MULTER SETUP ----------------
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => {
-    const uniqueName =
-      Date.now() +
-      "-" +
-      Math.round(Math.random() * 1e9) +
-      path.extname(file.originalname);
-    cb(null, uniqueName);
-  },
-});
-
+const storage = multer.memoryStorage();
 const handleMultipartData = multer({
   storage,
   limits: { fileSize: 5 * 1000000 },
 }).single("image");
+
+const uploadToCloudinary = (buffer, folder = "erp_products") => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream({ folder, resource_type: "image" }, (error, result) => {
+      if (error) return reject(error);
+      resolve(result);
+    });
+
+    Readable.from(buffer).pipe(stream);
+  });
+};
+
+const extractCloudinaryPublicId = (url) => {
+  if (!url || typeof url !== "string") return null;
+  const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z0-9]+(?:$|\?)/);
+  return match ? match[1] : null;
+};
 
 // ---------------- CONTROLLER ----------------
 const productController = {
@@ -49,16 +54,17 @@ const productController = {
       const { error } = schema.validate(req.body);
 
       if (error) {
-        // delete uploaded file if validation fails
-        try {
-          await fs.unlink(path.join(global.appRoot, filepath));
-        } catch (e) {
-          console.log("Cleanup error:", e.message);
-        }
         return next(error);
       }
 
       const { name, price, size } = req.body;
+
+      let uploadResult;
+      try {
+        uploadResult = await uploadToCloudinary(req.file.buffer);
+      } catch (uploadError) {
+        return next(CustomErrorHandler.serverError(uploadError.message));
+      }
 
       let document;
       try {
@@ -66,7 +72,7 @@ const productController = {
           name,
           price,
           size,
-          image: filepath,
+          image: uploadResult.secure_url,
         });
       } catch (error) {
         return next(error);
@@ -107,13 +113,24 @@ const productController = {
         return next(error);
       }
 
-      // delete old image if new uploaded
       if (req.file && product.image) {
-        const oldImagePath = path.join(global.appRoot, product.image);
+        const publicId = extractCloudinaryPublicId(product.image);
+        if (publicId) {
+          try {
+            await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+          } catch (err) {
+            console.log("Cloudinary delete error:", err.message);
+          }
+        }
+      }
+
+      let imageUrl = product.image;
+      if (req.file) {
         try {
-          await fs.unlink(oldImagePath);
-        } catch (err) {
-          console.log("Old image delete error:", err.message);
+          const uploadResult = await uploadToCloudinary(req.file.buffer);
+          imageUrl = uploadResult.secure_url;
+        } catch (uploadError) {
+          return next(CustomErrorHandler.serverError(uploadError.message));
         }
       }
 
@@ -121,9 +138,7 @@ const productController = {
         name,
         price,
         size,
-        ...(req.file && {
-          image: req.file.path.replace(/\\/g, "/"),
-        }),
+        image: imageUrl,
       };
 
       let updated;
@@ -165,14 +180,14 @@ const productController = {
       return next(error);
     }
 
-    // delete image
     if (document.image) {
-      const imagePath = path.join(global.appRoot, document.image);
-
-      try {
-        await fs.unlink(imagePath);
-      } catch (err) {
-        console.log("Image delete error:", err.message);
+      const publicId = extractCloudinaryPublicId(document.image);
+      if (publicId) {
+        try {
+          await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+        } catch (err) {
+          console.log("Cloudinary delete error:", err.message);
+        }
       }
     }
 
