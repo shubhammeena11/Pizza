@@ -28,7 +28,7 @@ function Cart() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="mx-20 my-8 flex flex-col items-center justify-center min-h-[400px] rounded-3xl bg-white shadow-xl">
+      <div className="mx-20 my-8 flex flex-col items-center justify-center min-h-100 rounded-3xl bg-white shadow-xl">
         <img
           src="public/images/empty-cart.png"
           alt="Empty Cart"
