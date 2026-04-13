@@ -31,11 +31,7 @@ function CreateProduct() {
     setSubmitting(true);
 
     try {
-      await api.post("/products", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await api.post("/products", formData);
 
       setSuccess("Product created successfully.");
       setName("");

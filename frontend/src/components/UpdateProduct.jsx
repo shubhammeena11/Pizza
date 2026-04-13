@@ -55,11 +55,7 @@ function UpdateProduct() {
     setSubmitting(true);
 
     try {
-      await api.put(`/products/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await api.put(`/products/${id}`, formData);
 
       setSuccess("Product updated successfully.");
       setTimeout(() => {
