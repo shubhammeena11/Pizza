@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import Product from './Product'
-import pizza from "../../public/images/pizza.png";
+import pizza from "../images/pizza.png";
 
 
 function Home() {
