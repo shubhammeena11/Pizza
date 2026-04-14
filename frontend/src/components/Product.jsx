@@ -137,13 +137,13 @@ function Product() {
           )}
         </div>
 
-        <div className='flex flex-wrap justify-between gap-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
           {loading ? (
-            <div className="flex items-center justify-center w-full py-8">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-4 flex items-center justify-center w-full py-8">
               <p className="text-gray-600">Loading products...</p>
             </div>
           ) : productList.length === 0 ? (
-            <div className="flex items-center justify-center w-full py-8">
+            <div className="col-span-1 sm:col-span-2 lg:col-span-4 flex items-center justify-center w-full py-8">
               <p className="text-gray-600">No products found.</p>
             </div>
           ) : (
