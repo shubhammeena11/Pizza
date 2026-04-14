@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import api, { logoutUser } from "../api.js";
 import logo from "../../public/images/logo.png";
+import cartlogo from "../../public/images/cart.png";
 
 function Header() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);

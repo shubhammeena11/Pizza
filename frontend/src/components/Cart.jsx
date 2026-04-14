@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateQuantity, removeFromCart, clearCart } from '../redux/cartSlice'
+import cart from "../../public/images/empty-cart.png";
 
 function Cart() {
   const cartItems = useSelector((state) => state.cart.items)
@@ -29,7 +30,7 @@ function Cart() {
     return (
       <div className="mx-20 my-8 flex flex-col items-center justify-center min-h-100 rounded-3xl bg-white shadow-xl">
         <img
-          src="public/images/empty-cart.png"
+          src={cart}
           alt="Empty Cart"
           className="w-48 h-48 mb-6 opacity-75"
         />
