@@ -69,7 +69,7 @@ function Header() {
           >
             <div className="bg-orange-500 text-white font-medium flex items-center justify-center  hover:bg-orange-600 gap-1 px-2 h-8 rounded-full">
               <span>{cartItems}</span>
-              <img src="public/images/cart.png" alt="cart" />
+              <img src={cartlogo} alt="cart" />
             </div>
           </NavLink>
         )}
