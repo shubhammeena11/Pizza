@@ -1,4 +1,5 @@
 import React from 'react'
+import logo from "../images/logp.png";
 
 function Footer() {
   return (
@@ -9,7 +10,7 @@ function Footer() {
           <div className="col-span-1">
             <div className="flex items-center mb-4">
               <img
-                src="../public/images/logo.png"
+                src={logo}
                 alt="logo"
                 className="h-8 w-16 mr-2"
               />
