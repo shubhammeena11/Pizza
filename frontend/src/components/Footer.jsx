@@ -4,8 +4,8 @@ import logo from "../images/logo.png";
 function Footer() {
   return (
     <footer className="bg-gray-800 text-white py-8">
-      <div className="mx-20">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="mx-4 sm:mx-6 lg:mx-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1">
             <div className="flex items-center mb-4">

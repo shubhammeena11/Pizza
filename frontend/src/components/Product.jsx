@@ -121,7 +121,7 @@ function Product() {
 
   return (
     <>
-      <div className='px-20 py-8'>
+      <div className='px-4 sm:px-6 lg:px-20 py-8'>
         <div className='mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
           <div>
             <h2 className='font-bold text-3xl'>Products</h2>
@@ -137,7 +137,7 @@ function Product() {
           )}
         </div>
 
-        <div className='flex flex-wrap justify-between'>
+        <div className='flex flex-wrap justify-between gap-4'>
           {loading ? (
             <div className="flex items-center justify-center w-full py-8">
               <p className="text-gray-600">Loading products...</p>

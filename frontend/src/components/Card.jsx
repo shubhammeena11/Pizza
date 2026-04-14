@@ -39,8 +39,8 @@ function Card({product, onProductDeleted}) {
 
   return (
     <>
-      <div className='relative w-48 my-10'>
-        <img src={product.image} alt={product.name} className='object-cover object-center h-48 w-48 rounded-full' />
+      <div className='relative w-full max-w-xs sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-0.75rem)] lg:w-[calc(25%-0.75rem)] my-6 mx-auto'>
+        <img src={product.image} alt={product.name} className='object-cover object-center h-48 w-full rounded-full' />
         
         {isAnimating && (
           <div className="absolute bottom-14 right-4 z-20 pointer-events-none">

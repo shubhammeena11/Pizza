@@ -43,8 +43,8 @@ function Cart() {
   }
 
   return (
-    <div className="mx-20 my-8 rounded-3xl bg-white shadow-xl p-8">
-      <div className="flex justify-between items-center mb-8">
+    <div className="mx-4 sm:mx-6 lg:mx-20 my-8 rounded-3xl bg-white shadow-xl p-8">
+      <div className="flex flex-col gap-4 justify-between items-start mb-8 sm:flex-row sm:items-center">
         <h1 className="text-3xl font-bold text-gray-900">Your Cart</h1>
         <button
           onClick={handleClearCart}
@@ -56,8 +56,8 @@ function Cart() {
 
       <div className="space-y-6">
         {cartItems.map((item) => (
-          <div key={item.product._id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-            <div className="flex items-center space-x-4">
+          <div key={item.product._id} className="flex flex-col gap-4 p-4 border border-gray-200 rounded-lg sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <img
                 src={item.product.image}
                 alt={item.product.name}
@@ -70,7 +70,7 @@ function Cart() {
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button
                   onClick={() => handleQuantityChange(item.product._id, item.quantity - 1)}

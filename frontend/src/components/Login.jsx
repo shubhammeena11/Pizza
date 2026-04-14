@@ -51,8 +51,8 @@ function Login() {
 
   return (
     <>
-    <div className="flex justify-center  w-full">
-    <div className="p-10 rounded-2xl bg-white shadow-lg max-w-md">
+    <div className="flex justify-center w-full px-4 sm:px-6">
+    <div className="p-10 rounded-2xl bg-white shadow-lg max-w-md w-full">
       <h1 className="text-3xl font-bold mb-4">
         {isRegister ? "Register" : "Login"}
       </h1>

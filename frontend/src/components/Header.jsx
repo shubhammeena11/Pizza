@@ -26,7 +26,7 @@ function Header() {
 
   return (
     <>
-    <div className="px-20 flex justify-between items-center fixed top-0 left-0 right-0 bg-white shadow-md z-10">
+    <div className="px-4 sm:px-6 lg:px-20 flex flex-wrap justify-between items-center fixed top-0 left-0 right-0 bg-white shadow-md z-10">
       <div className="flex items-center">
         <div className="self-center h-10">
           <img
@@ -37,7 +37,7 @@ function Header() {
         </div>
       </div>
 
-      <nav className="flex gap-5 items-center p-4 h-fit text-black">
+      <nav className="flex flex-wrap gap-2 sm:gap-5 items-center p-4 h-fit text-black justify-end">
         <NavLink
           to="/"
           className={({ isActive }) =>

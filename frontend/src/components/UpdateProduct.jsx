@@ -70,14 +70,14 @@ function UpdateProduct() {
 
   if (loading) {
     return (
-      <div className="mx-20 my-8 flex items-center justify-center rounded-3xl bg-white p-8 shadow-xl">
+      <div className="mx-4 sm:mx-6 lg:mx-20 my-8 flex items-center justify-center rounded-3xl bg-white p-8 shadow-xl">
         <p className="text-gray-600">Loading product...</p>
       </div>
     );
   }
 
   return (
-    <div className="mx-20 my-8 rounded-3xl bg-white p-8 shadow-xl">
+    <div className="mx-4 sm:mx-6 lg:mx-20 my-8 rounded-3xl bg-white p-8 shadow-xl">
       <div className="mb-8 flex flex-col gap-2">
         <h1 className="text-4xl font-bold text-gray-900">Update Product</h1>
         <p className="max-w-2xl text-gray-600">
