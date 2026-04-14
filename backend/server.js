@@ -15,7 +15,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // local frontend
-      "https://your-frontend-domain.com", // deployed frontend (add later)
+      "https://pizza-virid-beta.vercel.app/", // deployed frontend (add later)
     ],
     credentials: true,
   })
