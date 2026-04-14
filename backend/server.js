@@ -11,7 +11,15 @@ const app = express();
 connectDB();
 
 // ------------------ MIDDLEWARES ------------------
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // local frontend
+      "https://your-frontend-domain.com", // deployed frontend (add later)
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(urlencoded({ extended: false }));
 
