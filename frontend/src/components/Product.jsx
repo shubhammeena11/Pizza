@@ -15,7 +15,7 @@ function Product() {
   const fetchProducts = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await api.get(`/products/getall?page=${page}&limit=10`);
+      const res = await api.get(`/products/getall?page=${page}&limit=8`);
       setProducts(Array.isArray(res.data?.data) ? res.data.data : []);
       setTotalPages(res.data?.totalPages ?? 1);
       setCurrentPage(page);

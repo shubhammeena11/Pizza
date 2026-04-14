@@ -40,20 +40,30 @@ function Card({product, onProductDeleted}) {
   return (
     <>
       <div className='relative w-full my-4 overflow-hidden rounded-3xl bg-white shadow-lg'>
-        <img src={product.image} alt={product.name} className='object-cover object-center h-48 w-full rounded-t-3xl max-w-full' />
-        
-        {isAnimating && (
-          <div className="absolute bottom-14 right-4 z-20 pointer-events-none">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-16 h-16 rounded-full object-cover"
-              style={{
-                animation: 'flyToCart 0.6s ease-in-out forwards'
-              }}
-            />
-          </div>
-        )}
+      <div className="flex justify-center items-center mt-4">
+  <div className="w-40 h-40 rounded-full overflow-hidden">
+    <img
+      src={product.image}
+      alt={product.name}
+      className="w-full h-full object-cover object-center"
+    />
+  </div>
+</div>
+
+{isAnimating && (
+  <div className="absolute bottom-14 right-4 z-20 pointer-events-none">
+    <div className="w-16 h-16 rounded-full overflow-hidden">
+      <img
+        src={product.image}
+        alt={product.name}
+        className="w-full h-full object-cover object-center"
+        style={{
+          animation: 'flyToCart 0.6s ease-in-out forwards'
+        }}
+      />
+    </div>
+  </div>
+)}
         
         {isAdmin && (
           <div className='absolute top-2 right-2 flex gap-2'>
@@ -78,7 +88,7 @@ function Card({product, onProductDeleted}) {
             {product.size}
           </span>
           <div className='flex flex-col gap-2 w-full mt-2'>
-            <div className='flex items-center justify-between w-full'>
+            <div className='flex items-center justify-between w-full px-3'>
               <span className='font-medium text-gray-900'>₹{product.price}</span>
               <button
                 onClick={handleAddToCart}
