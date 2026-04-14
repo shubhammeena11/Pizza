@@ -1,5 +1,7 @@
 import React, { useRef } from 'react'
 import Product from './Product'
+import pizza from "../../public/images/pizza.png";
+
 
 function Home() {
   const productRef = useRef(null);
@@ -22,7 +24,7 @@ function Home() {
         </div>
 
         <div>
-          <img src="public/images/pizza.png" alt="pizza" width={400} />
+          <img src={pizza} alt="pizza" width={400} />
         </div>
       </div>
 

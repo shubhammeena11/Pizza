@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import api, { logoutUser } from "../api.js";
+import logo from "../../public/images/logo.png";
 
 function Header() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -28,7 +29,7 @@ function Header() {
       <div className="flex items-center">
         <div className="self-center h-10">
           <img
-            src="../public/images/logo.png"
+            src={logo}
             alt="logo"
             className="h-full w-full object-cover"
           />
@@ -39,7 +40,7 @@ function Header() {
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `min-w-[60px] text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+            `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
           }
         >
           Home
@@ -50,7 +51,7 @@ function Header() {
             <NavLink
               to="/product"
               className={({ isActive }) =>
-                `min-w-[60px] text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
               }
             >
               Product
@@ -62,7 +63,7 @@ function Header() {
           <NavLink
             to="/cart"
             className={({ isActive }) =>
-              `min-w-[60px] text-center ${isActive ? "text-orange-500 font-bold" : ""}`
+              `min-w-15 text-center ${isActive ? "text-orange-500 font-bold" : ""}`
             }
           >
             <div className="bg-orange-500 text-white font-medium flex items-center justify-center  hover:bg-orange-600 gap-1 px-2 h-8 rounded-full">
