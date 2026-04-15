@@ -30,11 +30,14 @@ function Header() {
     <div className="px-4 sm:px-6 lg:px-20 flex flex-wrap justify-between items-center fixed top-0 left-0 right-0 bg-white shadow-md z-10">
       <div className="flex items-center gap-4">
         <div className="self-center h-10">
+          <NavLink
+            to="/">
           <img
             src={logo}
             alt="logo"
             className="h-full w-full object-cover"
-          />
+            />
+            </NavLink>
         </div>
       </div>
 

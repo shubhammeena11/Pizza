@@ -8,8 +8,8 @@ function Home() {
 
   return (
     <>
-      <div className='px-4 sm:px-6 lg:px-20 flex flex-col md:flex-row justify-between items-center gap-10'>
-        <div>
+      <div className='px-4 sm:px-6 lg:px-20 flex flex-row justify-between items-center gap-10'>
+        <div className='pl-5 md:p-0'>
           <p className='italic font-medium'>are you hungry?</p>
           <h2 className='text-4xl font-bold'>Don't Wait !</h2>
 
@@ -24,7 +24,7 @@ function Home() {
         </div>
 
         <div>
-          <img src={pizza} alt="pizza" className="w-full max-w-md" />
+          <img src={pizza} alt="pizza" className="w-full max-w-md p-5 " />
         </div>
       </div>
 
