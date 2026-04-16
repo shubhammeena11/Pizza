@@ -69,38 +69,6 @@ function Header() {
         >
           Home
         </NavLink>
-
-        {isAdmin && (
-          <>
-            <NavLink
-              to="/product"
-              className={({ isActive }) =>
-                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-              }
-            >
-              Product
-            </NavLink>
-            <NavLink
-              to="/admin/dashboard"
-              className={({ isActive }) =>
-                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-              }
-            >
-              Dashboard
-            </NavLink>
-          </>
-        )}
-
-        {isCustomer && (
-          <NavLink
-            to="/orders/my"
-            className={({ isActive }) =>
-              `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-            }
-          >
-            My Orders
-          </NavLink>
-        )}
       </nav>
 
       <div className="flex items-center gap-2">
@@ -208,67 +176,6 @@ function Header() {
             Home
           </NavLink>
 
-          {isAdmin && (
-            <>
-              <NavLink
-                to="/product"
-                onClick={() => setMenuOpen(false)}
-                className={({ isActive }) =>
-                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
-                }
-              >
-                Product
-              </NavLink>
-              <NavLink
-                to="/admin/dashboard"
-                onClick={() => setMenuOpen(false)}
-                className={({ isActive }) =>
-                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
-                }
-              >
-                Dashboard
-              </NavLink>
-            </>
-          )}
-          {user && (
-            <NavLink
-              to="/profile"
-              onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
-              }
-            >
-              Profile
-            </NavLink>
-          )}
-
-          {isCustomer && (
-            <>
-              <NavLink
-                to="/orders/my"
-                onClick={() => setMenuOpen(false)}
-                className={({ isActive }) =>
-                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
-                }
-              >
-                My Orders
-              </NavLink>
-              <NavLink
-                to="/cart"
-                onClick={() => setMenuOpen(false)}
-                className={({ isActive }) =>
-                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
-                }
-              >
-                <div className="flex items-center gap-2 text-gray-800">
-                  <span>{cartItems}</span>
-                  <img src={cartlogo} alt="cart" className="h-5 w-5 object-contain" />
-                  Cart
-                </div>
-              </NavLink>
-            </>
-          )}
-
           {!user ? (
             <NavLink
               to="/login"
@@ -279,18 +186,7 @@ function Header() {
             >
               Login
             </NavLink>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                setShowLogoutConfirm(true);
-              }}
-              className="inline-flex items-center justify-center rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
-            >
-              Logout
-            </button>
-          )}
+          ) : null}
         </nav>
       </div>
     )}
