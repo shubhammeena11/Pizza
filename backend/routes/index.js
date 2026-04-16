@@ -17,6 +17,7 @@ router.delete('/products/:id', auth, admin, productController.delete);
 router.get('/products/getall', productController.getAll);
 router.get('/products/:id', productController.getSingle);
 router.post('/orders/checkout', auth, orderController.checkout);
+router.get('/orders/my', auth, orderController.getUserOrders);
 router.get('/orders', auth, admin, orderController.getAllOrders);
 router.get('/dashboard', auth, admin, dashboardController.dashboard);
 

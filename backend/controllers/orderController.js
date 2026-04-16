@@ -61,6 +61,18 @@ const orderController = {
       return next(err);
     }
   },
+
+  async getUserOrders(req, res, next) {
+    try {
+      const orders = await Order.find({ user: req.user._id })
+        .populate("items.product", "name price size")
+        .sort({ createdAt: -1 });
+
+      res.json({ orders });
+    } catch (err) {
+      return next(err);
+    }
+  },
 };
 
 export default orderController;

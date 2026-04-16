@@ -42,7 +42,7 @@ function Checkout() {
       setMessage("Order submitted successfully. Thank you!");
       dispatch(clearCart());
       setTimeout(() => {
-        navigate("/");
+        navigate("/orders/my");
       }, 1200);
     } catch (err) {
       console.error(err);

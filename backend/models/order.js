@@ -26,6 +26,7 @@ const orderSchema = new Schema(
     address: { type: String, required: true },
     paymentMethod: { type: String, default: "card" },
     source: { type: String, default: "cart page" },
+    status: { type: String, default: "Pending" },
   },
   { timestamps: true }
 );

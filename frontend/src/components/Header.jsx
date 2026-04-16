@@ -119,17 +119,27 @@ function Header() {
           )}
 
           {isCustomer && (
-            <NavLink
-              to="/cart"
-              className={({ isActive }) =>
-                `min-w-15 text-center ${isActive ? "text-orange-500 font-bold" : ""}`
-              }
-            >
-              <div className="bg-orange-500 text-white font-medium flex items-center justify-center hover:bg-orange-600 gap-1 px-2 h-8 rounded-full">
-                <span>{cartItems}</span>
-                <img src={cartlogo} alt="cart" className="h-4 w-4 object-contain" />
-              </div>
-            </NavLink>
+            <>
+              <NavLink
+                to="/orders/my"
+                className={({ isActive }) =>
+                  `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+                }
+              >
+                My Orders
+              </NavLink>
+              <NavLink
+                to="/cart"
+                className={({ isActive }) =>
+                  `min-w-15 text-center ${isActive ? "text-orange-500 font-bold" : ""}`
+                }
+              >
+                <div className="bg-orange-500 text-white font-medium flex items-center justify-center hover:bg-orange-600 gap-1 px-2 h-8 rounded-full">
+                  <span>{cartItems}</span>
+                  <img src={cartlogo} alt="cart" className="h-4 w-4 object-contain" />
+                </div>
+              </NavLink>
+            </>
           )}
 
           {!user ? (
@@ -220,19 +230,30 @@ function Header() {
           )}
 
           {isCustomer && (
-            <NavLink
-              to="/cart"
-              onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
-              }
-            >
-              <div className="flex items-center gap-2 text-gray-800">
-                <span>{cartItems}</span>
-                <img src={cartlogo} alt="cart" className="h-5 w-5 object-contain" />
-                Cart
-              </div>
-            </NavLink>
+            <>
+              <NavLink
+                to="/orders/my"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                My Orders
+              </NavLink>
+              <NavLink
+                to="/cart"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                <div className="flex items-center gap-2 text-gray-800">
+                  <span>{cartItems}</span>
+                  <img src={cartlogo} alt="cart" className="h-5 w-5 object-contain" />
+                  Cart
+                </div>
+              </NavLink>
+            </>
           )}
 
           {!user ? (
