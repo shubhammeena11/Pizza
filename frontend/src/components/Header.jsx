@@ -40,7 +40,7 @@ function Header() {
 
   return (
     <>
-    <div className="h-16 px-4 sm:px-6 lg:px-20 flex flex-wrap justify-between items-center fixed top-0 left-0 right-0 bg-white shadow-md z-10">
+    <div className="min-h-16 px-4 sm:px-6 lg:px-20 py-3 flex flex-wrap justify-between items-center fixed top-0 left-0 right-0 bg-white shadow-md z-10">
       <div className="flex items-center gap-4">
      
         <NavLink to="/" className="flex items-center gap-2 h-10">
@@ -122,14 +122,14 @@ function Header() {
         )}
       </nav>
 
-      <div className="flex items-center gap-2">
-        <form onSubmit={handleSearchSubmit} className="hidden sm:flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1">
+      <div className="flex flex-1 items-center gap-2 min-w-55 sm:min-w-90">
+        <form onSubmit={handleSearchSubmit} className="flex w-full items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search product"
-            className="w-52 bg-transparent text-sm text-gray-900 focus:outline-none"
+            className="w-full bg-transparent text-sm text-gray-900 focus:outline-none"
           />
           <button type="submit" className="text-gray-500 hover:text-orange-600">
             Search
@@ -303,21 +303,6 @@ function Header() {
                 Product
               </NavLink>
             </>
-          )}
-
-          {user && (
-            <form onSubmit={handleSearchSubmit} className="flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search product"
-                className="w-full bg-transparent text-sm text-gray-900 focus:outline-none"
-              />
-              <button type="submit" className="text-gray-500 hover:text-orange-600">
-                Search
-              </button>
-            </form>
           )}
 
           {!user ? (
