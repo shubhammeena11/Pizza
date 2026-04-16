@@ -233,18 +233,10 @@ function Header() {
               >
                 Profile
               </NavLink>
-              <button
-                type="button"
-                onClick={() => {
-                  setMenuOpen(false);
-                  handleLogout();
-                }}
-                className="w-full text-left rounded-xl px-3 py-2 text-gray-800 hover:bg-gray-100"
-              >
-                Logout
-              </button>
+              
             </>
           )}
+          
 
           {isCustomer && (
             <>
@@ -319,6 +311,22 @@ function Header() {
               >
                 Product
               </NavLink>
+            </>
+          )}
+
+          {user && (
+            <>
+             
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+                className="w-full text-left rounded-xl px-3 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                Logout
+              </button>
             </>
           )}
 
