@@ -196,6 +196,8 @@ function Header() {
         </nav>
       </div>
     )}
+
+    <div className="h-20"></div>
     </>
   );
 }
