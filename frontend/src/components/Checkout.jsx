@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import api from "../api.js";
@@ -13,6 +13,13 @@ function Checkout() {
   const [processing, setProcessing] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("access_token");
+    if (!accessToken) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,9 +51,12 @@ function Checkout() {
       return;
     } catch (err) {
       console.error(err);
-      setMessage(
-        err.response?.data?.message || "Failed to submit order. Please try again."
-      );
+      const errorMessage =
+        err.response?.data?.message || err.message || "Failed to submit order. Please try again.";
+      setMessage(errorMessage);
+      if (err.response?.status === 401) {
+        navigate("/login");
+      }
     } finally {
       setProcessing(false);
     }

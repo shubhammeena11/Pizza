@@ -39,6 +39,7 @@ const orderController = {
       address,
       paymentMethod,
       source: source || "cart page",
+      status: "Order placed successfully",
     };
 
     try {
