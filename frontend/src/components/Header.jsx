@@ -155,7 +155,7 @@ function Header() {
             Login
           </NavLink>
         ) : (
-          <div className="relative">
+          <div className="relative hidden sm:block">
             <button
               type="button"
               onClick={() => setShowLogoutConfirm(true)}
@@ -217,6 +217,30 @@ function Header() {
     {menuOpen && (
       <div className="sm:hidden fixed top-20 left-0 right-0 z-10 bg-white border-t border-gray-200 shadow-sm">
         <nav className="flex flex-col gap-2 p-4 text-black">
+          {user && (
+            <>
+              <NavLink
+                to="/profile"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                Profile
+              </NavLink>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+                className="w-full text-left rounded-xl px-3 py-2 text-gray-800 hover:bg-gray-100"
+              >
+                Logout
+              </button>
+            </>
+          )}
+
           {isCustomer && (
             <>
               <NavLink
@@ -279,6 +303,21 @@ function Header() {
                 Product
               </NavLink>
             </>
+          )}
+
+          {user && (
+            <form onSubmit={handleSearchSubmit} className="flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search product"
+                className="w-full bg-transparent text-sm text-gray-900 focus:outline-none"
+              />
+              <button type="submit" className="text-gray-500 hover:text-orange-600">
+                Search
+              </button>
+            </form>
           )}
 
           {!user ? (

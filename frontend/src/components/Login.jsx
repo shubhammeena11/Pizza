@@ -12,6 +12,7 @@ function Login() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -19,9 +20,11 @@ function Login() {
     event.preventDefault();
     setError("");
     setMessage("");
+    setLoading(true);
 
     if (isRegister) {
       if (password !== confirmPassword) {
+        setLoading(false);
         setError("Passwords do not match.");
         return;
       }
@@ -32,6 +35,8 @@ function Login() {
         setIsRegister(false);
       } catch (err) {
         setError(err.response?.data?.message || "Registration failed.");
+      } finally {
+        setLoading(false);
       }
       return;
     }
@@ -46,6 +51,7 @@ function Login() {
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed.");
+      setLoading(false);
     }
   };
 
@@ -111,9 +117,20 @@ function Login() {
 
         <button
           type="submit"
-          className="w-full rounded-xl bg-orange-400 px-4 py-3 text-white transition hover:bg-orange-500"
+          disabled={loading}
+          className="w-full rounded-xl bg-orange-400 px-4 py-3 text-white transition hover:bg-orange-500 disabled:cursor-not-allowed disabled:bg-orange-300"
         >
-          {isRegister ? "Register" : "Login"}
+          {loading ? (
+            <span className="inline-flex items-center justify-center gap-2">
+              <svg className="h-5 w-5 animate-spin text-white" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+              </svg>
+              Verifying...
+            </span>
+          ) : (
+            (isRegister ? "Register" : "Login")
+          )}
         </button>
       </form>
 
