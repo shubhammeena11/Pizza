@@ -11,6 +11,7 @@ import UpdateProduct from "./components/UpdateProduct.jsx";
 import Checkout from "./components/Checkout.jsx";
 import AdminDashboard from "./components/AdminDashboard.jsx";
 import MyOrders from "./components/MyOrders.jsx";
+import Profile from "./components/Profile.jsx";
 import Login from "./components/Login";
 import api from "./api.js";
 import { setUser, logout } from "./redux/authSlice";
@@ -50,6 +51,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/orders/my" element={<MyOrders />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/login" element={<Login />} />
           </Routes>

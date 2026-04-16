@@ -43,15 +43,21 @@ function Header() {
     <div className="px-4 sm:px-6 lg:px-20 flex flex-wrap justify-between items-center fixed top-0 left-0 right-0 bg-white shadow-md z-10">
       <div className="flex items-center gap-4">
         <div className="self-center h-10">
-          <NavLink
-            to="/">
-          <img
-            src={logo}
-            alt="logo"
-            className="h-full w-full object-cover"
-            />
-            </NavLink>
+          <NavLink to="/">
+            <img src={logo} alt="logo" className="h-full w-full object-cover" />
+          </NavLink>
         </div>
+        {user && (
+          <NavLink
+            to="/profile"
+            className="hidden sm:flex items-center gap-3 rounded-full border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 transition hover:bg-orange-50"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-500 text-sm font-semibold text-white">
+              {user.name?.[0]?.toUpperCase() || "U"}
+            </div>
+            <span>Profile</span>
+          </NavLink>
+        )}
       </div>
 
       <div className="flex items-center gap-2">
@@ -96,6 +102,16 @@ function Header() {
           >
             Home
           </NavLink>
+          {user && (
+            <NavLink
+              to="/profile"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              Profile
+            </NavLink>
+          )}
 
           {isAdmin && (
             <>
@@ -227,6 +243,17 @@ function Header() {
                 Dashboard
               </NavLink>
             </>
+          )}
+          {user && (
+            <NavLink
+              to="/profile"
+              onClick={() => setMenuOpen(false)}
+              className={({ isActive }) =>
+                `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+              }
+            >
+              Profile
+            </NavLink>
           )}
 
           {isCustomer && (

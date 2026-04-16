@@ -192,7 +192,7 @@ function AdminDashboard() {
                         )}
                       </div>
                       <div className="flex items-center gap-3">
-                        <div className="rounded-2xl bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700">
+                        <div className="rounded-2xl bg-green-50 px-4 py-2 text-sm font-semibold text-green-700">
                           {formatStatus(order.status)}
                         </div>
                         <button
