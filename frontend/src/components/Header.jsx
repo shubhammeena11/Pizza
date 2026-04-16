@@ -45,7 +45,7 @@ function Header() {
      
         <NavLink to="/" className="flex items-center gap-2 h-10">
           <img src={logo} alt="logo" className="h-10 w-10 object-cover" />
-          <span className="font-bold text-xl">Pizza</span>
+          <span className="hidden sm:inline-flex font-bold text-xl">Pizza</span>
         </NavLink>
 
         {user && (
