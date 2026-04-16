@@ -10,6 +10,21 @@ function AdminDashboard() {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
+  const STATUS_ORDER = {
+    "Order placed successfully": 0,
+    "Order packed": 1,
+    "Order delivered": 2,
+    "Order cancelled": 3,
+  };
+
+  const sortOrders = (orderList) =>
+    [...orderList].sort((a, b) => {
+      const rankA = STATUS_ORDER[a.status] ?? 0;
+      const rankB = STATUS_ORDER[b.status] ?? 0;
+      if (rankA !== rankB) return rankA - rankB;
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
   useEffect(() => {
     const loadUsers = async () => {
       setLoading(true);
@@ -35,7 +50,7 @@ function AdminDashboard() {
     setNotice("");
     try {
       const { data } = await api.get(`/orders/user/${user.userId}`);
-      setOrders(data.orders || []);
+      setOrders(sortOrders(data.orders || []));
       setDeliveredCount(data.deliveredCount ?? 0);
     } catch (err) {
       console.error(err);
@@ -194,29 +209,15 @@ function AdminDashboard() {
                   </div>
 
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <button
-                      type="button"
-                      onClick={() => handleStatusChange(order._id, "Order packed")}
-                      disabled={order.status === "Order packed" || order.status === "Order delivered" || order.status === "Order cancelled"}
-                      className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      Mark Packed
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleStatusChange(order._id, "Order delivered")}
-                      disabled={order.status !== "Order packed" || order.status === "Order delivered" || order.status === "Order cancelled"}
-                      className="rounded-full border border-orange-500 bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      Mark Delivered
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleCancelOrder(order)}
-                      className="rounded-full border border-red-500 bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
-                    >
-                      Cancel Order
-                    </button>
+                    {order.status !== "Order delivered" && order.status !== "Order cancelled" ? (
+                      <button
+                        type="button"
+                        onClick={() => handleStatusChange(order._id, order.status === "Order packed" ? "Order delivered" : "Order packed")}
+                        className="rounded-full border border-orange-500 bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+                      >
+                        {order.status === "Order packed" ? "Mark Delivered" : "Mark Packed"}
+                      </button>
+                    ) : null}
                   </div>
                 </div>
               ))

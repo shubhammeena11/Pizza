@@ -175,6 +175,10 @@ const orderController = {
         return next(CustomErrorHandler.notFound("Order not found"));
       }
 
+      if (req.user.role !== "admin" && order.user.toString() !== req.user._id.toString()) {
+        return next(CustomErrorHandler.forbidden("You do not have permission to cancel this order."));
+      }
+
       if (order.status === STATUS_PACKED || order.status === STATUS_DELIVERED) {
         return next(CustomErrorHandler.badRequest("Order is packed now you can't cancel the order."));
       }

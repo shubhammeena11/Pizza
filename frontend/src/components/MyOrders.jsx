@@ -5,6 +5,22 @@ function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
+
+  const STATUS_ORDER = {
+    "Order placed successfully": 0,
+    "Order packed": 1,
+    "Order delivered": 2,
+    "Order cancelled": 3,
+  };
+
+  const sortOrders = (orderList) =>
+    [...orderList].sort((a, b) => {
+      const rankA = STATUS_ORDER[a.status] ?? 0;
+      const rankB = STATUS_ORDER[b.status] ?? 0;
+      if (rankA !== rankB) return rankA - rankB;
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -12,7 +28,7 @@ function MyOrders() {
       setError("");
       try {
         const { data } = await api.get("/orders/my");
-        setOrders(data.orders || []);
+        setOrders(sortOrders(data.orders || []));
       } catch (err) {
         console.error(err);
         setError(
@@ -26,6 +42,19 @@ function MyOrders() {
 
     loadOrders();
   }, []);
+
+  const handleCancelOrder = async (orderId) => {
+    setNotice("");
+    try {
+      await api.post(`/orders/${orderId}/cancel`);
+      const { data } = await api.get("/orders/my");
+      setOrders(sortOrders(data.orders || []));
+      setNotice("Order cancelled successfully.");
+    } catch (err) {
+      console.error(err);
+      setNotice(err.response?.data?.message || "Unable to cancel the order.");
+    }
+  };
 
   const formatStatus = (status) => {
     if (!status || status === "Pending") {
@@ -46,8 +75,14 @@ function MyOrders() {
       ) : orders.length === 0 ? (
         <div className="mt-8 text-gray-600">You haven't placed any orders yet.</div>
       ) : (
-        <div className="mt-8 space-y-6">
-          {orders.map((order) => (
+        <>
+          {notice && (
+            <div className="mt-6 rounded-2xl border border-orange-200 bg-orange-50 p-4 text-orange-800">
+              {notice}
+            </div>
+          )}
+          <div className="mt-8 space-y-6">
+            {orders.map((order) => (
             <div key={order._id} className="rounded-3xl border border-gray-200 p-6 shadow-sm">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -87,9 +122,28 @@ function MyOrders() {
                   ))}
                 </div>
               </div>
+
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                {order.status === "Order packed" || order.status === "Order delivered" || order.status === "Order cancelled" ? (
+                  <div className="rounded-full border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-600">
+                    {order.status === "Order packed" && "Order is already packed. Cancellation is not available."}
+                    {order.status === "Order delivered" && "Order is already delivered. Cancellation is not available."}
+                    {order.status === "Order cancelled" && "Order has been cancelled."}
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleCancelOrder(order._id)}
+                    className="rounded-full border border-red-500 bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
+                  >
+                    Cancel Order
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
+        </>
       )}
     </div>
   );
