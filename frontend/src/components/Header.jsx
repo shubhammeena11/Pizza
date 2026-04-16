@@ -42,12 +42,6 @@ function Header() {
     <>
     <div className="px-4 sm:px-6 lg:px-20 flex flex-wrap justify-between items-center fixed top-0 left-0 right-0 bg-white shadow-md z-10">
       <div className="flex items-center gap-4">
-        <div className="self-center h-10">
-          <NavLink to="/">
-            <img src={logo} alt="logo" className="h-full w-full object-cover" />
-            <span className = "font-bold text-xl" >Pizza</span>
-          </NavLink>
-        </div>
         {user && (
           <NavLink
             to="/profile"
@@ -59,7 +53,55 @@ function Header() {
             <span>Profile</span>
           </NavLink>
         )}
+
+        <NavLink to="/" className="flex items-center gap-2 h-10">
+          <img src={logo} alt="logo" className="h-10 w-10 object-cover" />
+          <span className="font-bold text-xl">Pizza</span>
+        </NavLink>
       </div>
+
+      <nav className="hidden sm:flex gap-6 items-center text-black">
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+          }
+        >
+          Home
+        </NavLink>
+
+        {isAdmin && (
+          <>
+            <NavLink
+              to="/product"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              Product
+            </NavLink>
+            <NavLink
+              to="/admin/dashboard"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              Dashboard
+            </NavLink>
+          </>
+        )}
+
+        {isCustomer && (
+          <NavLink
+            to="/orders/my"
+            className={({ isActive }) =>
+              `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+            }
+          >
+            My Orders
+          </NavLink>
+        )}
+      </nav>
 
       <div className="flex items-center gap-2">
         <form onSubmit={handleSearchSubmit} className="hidden sm:flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1">
@@ -74,6 +116,63 @@ function Header() {
             Search
           </button>
         </form>
+
+        {isCustomer && (
+          <NavLink to="/cart" className="hidden sm:inline-flex">
+            <div className="bg-orange-500 text-white font-medium flex items-center justify-center gap-1 px-3 h-10 rounded-full hover:bg-orange-600">
+              <span>{cartItems}</span>
+              <img src={cartlogo} alt="cart" className="h-5 w-5 object-contain" />
+            </div>
+          </NavLink>
+        )}
+
+        {!user ? (
+          <NavLink
+            to="/login"
+            className={({ isActive }) =>
+              `inline-flex items-center justify-center rounded-full bg-orange-500 px-5 h-10 text-sm font-semibold text-white transition hover:bg-orange-600 ${isActive ? "bg-orange-500" : ""}`
+            }
+          >
+            Login
+          </NavLink>
+        ) : (
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowLogoutConfirm(true)}
+              className="inline-flex items-center justify-center rounded-full bg-orange-500 px-4 h-10 text-sm font-semibold text-white transition hover:bg-orange-600"
+            >
+              Logout
+            </button>
+            {showLogoutConfirm && (
+              <div className="absolute right-0 mt-2 w-60 rounded-2xl border border-orange-200 bg-white p-4 shadow-xl">
+                <p className="text-sm font-semibold text-gray-800">Log out?</p>
+                <p className="text-xs text-gray-500 mt-1">Are you sure you want to logout from your account?</p>
+                <div className="mt-3 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowLogoutConfirm(false);
+                    }}
+                    className="flex-1 rounded-full border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowLogoutConfirm(false);
+                      handleLogout();
+                    }}
+                    className="flex-1 rounded-full bg-orange-500 px-3 py-2 text-xs font-semibold text-white hover:bg-orange-600"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <button
           type="button"
@@ -93,120 +192,6 @@ function Header() {
             )}
           </svg>
         </button>
-
-        <nav className="hidden sm:flex gap-5 items-center p-4 h-fit text-black">
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-            }
-          >
-            Home
-          </NavLink>
-          {user && (
-            <NavLink
-              to="/profile"
-              className={({ isActive }) =>
-                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-              }
-            >
-              Profile
-            </NavLink>
-          )}
-
-          {isAdmin && (
-            <>
-              <NavLink
-                to="/product"
-                className={({ isActive }) =>
-                  `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-                }
-              >
-                Product
-              </NavLink>
-              <NavLink
-                to="/admin/dashboard"
-                className={({ isActive }) =>
-                  `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-                }
-              >
-                Dashboard
-              </NavLink>
-            </>
-          )}
-
-          {isCustomer && (
-            <>
-              <NavLink
-                to="/orders/my"
-                className={({ isActive }) =>
-                  `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-                }
-              >
-                My Orders
-              </NavLink>
-              <NavLink
-                to="/cart"
-                className={({ isActive }) =>
-                  `min-w-15 text-center ${isActive ? "text-orange-500 font-bold" : ""}`
-                }
-              >
-                <div className="bg-orange-500 text-white font-medium flex items-center justify-center hover:bg-orange-600 gap-1 px-2 h-8 rounded-full">
-                  <span>{cartItems}</span>
-                  <img src={cartlogo} alt="cart" className="h-4 w-4 object-contain" />
-                </div>
-              </NavLink>
-            </>
-          )}
-
-          {!user ? (
-            <NavLink
-              to="/login"
-              className={({ isActive }) =>
-                `inline-flex items-center justify-center rounded-full bg-orange-500 px-5 h-8 text-sm font-semibold text-white transition hover:bg-orange-600 ${isActive ? "bg-orange-500" : ""}`
-              }
-            >
-              Login
-            </NavLink>
-          ) : (
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setShowLogoutConfirm(true)}
-                className="inline-flex items-center justify-center rounded-full bg-orange-500 px-2 h-8 text-sm font-semibold text-white transition hover:bg-orange-600"
-              >
-                Logout
-              </button>
-              {showLogoutConfirm && (
-                <div className="absolute right-0 mt-2 w-60 rounded-2xl border border-orange-200 bg-white p-4 shadow-xl">
-                  <p className="text-sm font-semibold text-gray-800">Log out?</p>
-                  <p className="text-xs text-gray-500 mt-1">Are you sure you want to logout from your account?</p>
-                  <div className="mt-3 flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowLogoutConfirm(false);
-                      }}
-                      className="flex-1 rounded-full border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowLogoutConfirm(false);
-                        handleLogout();
-                      }}
-                      className="flex-1 rounded-full bg-orange-500 px-3 py-2 text-xs font-semibold text-white hover:bg-orange-600"
-                    >
-                      Confirm
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </nav>
       </div>
     </div>
 
