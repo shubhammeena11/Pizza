@@ -1,7 +1,8 @@
 import axios from "axios";
 import { store } from "./redux/store.js";
 import { logout } from "./redux/authSlice.js";
-const API = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
+const rawApiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API = rawApiBase.replace(/\/$/, "");
 
 const api = axios.create({
   baseURL: API,

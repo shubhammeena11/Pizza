@@ -1,12 +1,15 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { updateQuantity, removeFromCart, clearCart } from '../redux/cartSlice'
 import cart from "../images/empty-cart.png";
 
 function Cart() {
   const cartItems = useSelector((state) => state.cart.items)
   const totalPrice = useSelector((state) => state.cart.totalPrice)
+  const user = useSelector((state) => state.auth.user)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity <= 0) {
@@ -107,7 +110,16 @@ function Cart() {
           <span>Total:</span>
           <span>₹{totalPrice}</span>
         </div>
-        <button className="w-full mt-4 bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition font-semibold">
+        <button
+          onClick={() => {
+            if (!user) {
+              navigate('/login');
+            } else {
+              navigate('/checkout');
+            }
+          }}
+          className="w-full mt-4 bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition font-semibold"
+        >
           Proceed to Checkout
         </button>
       </div>

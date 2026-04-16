@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import Card from './Card.jsx'
 import api from '../api.js';
@@ -9,13 +9,15 @@ function Product() {
    const [currentPage, setCurrentPage] = useState(1);
    const [totalPages, setTotalPages] = useState(1);
    const [loading, setLoading] = useState(false);
+   const [searchParams] = useSearchParams();
    const user = useSelector((state) => state.auth.user);
    const isAdmin = user?.role === 'admin';
 
-  const fetchProducts = async (page = 1) => {
+  const fetchProducts = async (page = 1, search = "") => {
     setLoading(true);
     try {
-      const res = await api.get(`/products/getall?page=${page}&limit=8`);
+      const query = new URLSearchParams({ page, limit: 8, ...(search ? { search } : {}) });
+      const res = await api.get(`/products/getall?${query.toString()}`);
       setProducts(Array.isArray(res.data?.data) ? res.data.data : []);
       setTotalPages(res.data?.totalPages ?? 1);
       setCurrentPage(page);
@@ -29,17 +31,21 @@ function Product() {
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    const search = searchParams.get("search") || "";
+    fetchProducts(1, search);
+  }, [searchParams]);
+
   const handleProductDeleted = (deletedProductId) => {
     setProducts(products.filter(p => p._id !== deletedProductId));
     // Refresh current page to maintain pagination
-    fetchProducts(currentPage);
+    const search = searchParams.get("search") || "";
+    fetchProducts(currentPage, search);
   };
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
-      fetchProducts(page);
+      const search = searchParams.get("search") || "";
+      fetchProducts(page, search);
     }
   };
 

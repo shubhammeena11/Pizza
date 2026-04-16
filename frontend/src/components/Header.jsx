@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import api, { logoutUser } from "../api.js";
 import logo from "../images/logo.png";
@@ -8,8 +8,10 @@ import cartlogo from "../images/cart.png";
 function Header() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const user = useSelector((state) => state.auth.user);
   const cartItems = useSelector((state) => state.cart.totalItems);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -20,6 +22,17 @@ function Header() {
     }
 
     logoutUser();
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    const trimmed = searchQuery.trim();
+    if (trimmed.length === 0) {
+      navigate("/product");
+    } else {
+      navigate(`/product?search=${encodeURIComponent(trimmed)}`);
+    }
+    setMenuOpen(false);
   };
 
   const isAdmin = user?.role === "admin";
@@ -42,6 +55,19 @@ function Header() {
       </div>
 
       <div className="flex items-center gap-2">
+        <form onSubmit={handleSearchSubmit} className="hidden sm:flex items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search product"
+            className="w-52 bg-transparent text-sm text-gray-900 focus:outline-none"
+          />
+          <button type="submit" className="text-gray-500 hover:text-orange-600">
+            Search
+          </button>
+        </form>
+
         <button
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
@@ -72,14 +98,24 @@ function Header() {
           </NavLink>
 
           {isAdmin && (
-            <NavLink
-              to="/product"
-              className={({ isActive }) =>
-                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-              }
-            >
-              Product
-            </NavLink>
+            <>
+              <NavLink
+                to="/product"
+                className={({ isActive }) =>
+                  `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+                }
+              >
+                Product
+              </NavLink>
+              <NavLink
+                to="/admin/dashboard"
+                className={({ isActive }) =>
+                  `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+                }
+              >
+                Dashboard
+              </NavLink>
+            </>
           )}
 
           {isCustomer && (
@@ -161,15 +197,26 @@ function Header() {
           </NavLink>
 
           {isAdmin && (
-            <NavLink
-              to="/product"
-              onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
-              }
-            >
-              Product
-            </NavLink>
+            <>
+              <NavLink
+                to="/product"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                Product
+              </NavLink>
+              <NavLink
+                to="/admin/dashboard"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                Dashboard
+              </NavLink>
+            </>
           )}
 
           {isCustomer && (
