@@ -63,15 +63,62 @@ function Header() {
       </div>
 
       <nav className="hidden sm:flex gap-6 items-center text-black">
-        {(isAdmin || isCustomer) && (
-          <NavLink
-            to="/"
-            className={({ isActive }) =>
-              `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-            }
-          >
-            Home
-          </NavLink>
+        {isCustomer && (
+          <>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/product"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              Product
+            </NavLink>
+            <NavLink
+              to="/orders/my"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              My Orders
+            </NavLink>
+          </>
+        )}
+
+        {isAdmin && (
+          <>
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/admin/dashboard"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/product"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              Product
+            </NavLink>
+          </>
         )}
       </nav>
 
@@ -170,16 +217,68 @@ function Header() {
     {menuOpen && (
       <div className="sm:hidden fixed top-20 left-0 right-0 z-10 bg-white border-t border-gray-200 shadow-sm">
         <nav className="flex flex-col gap-2 p-4 text-black">
-          {(isAdmin || isCustomer) && (
-            <NavLink
-              to="/"
-              onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
-              }
-            >
-              Home
-            </NavLink>
+          {isCustomer && (
+            <>
+              <NavLink
+                to="/"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/product"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                Product
+              </NavLink>
+              <NavLink
+                to="/orders/my"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                My Orders
+              </NavLink>
+            </>
+          )}
+
+          {isAdmin && (
+            <>
+              <NavLink
+                to="/"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/admin/dashboard"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                Dashboard
+              </NavLink>
+              <NavLink
+                to="/product"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                Product
+              </NavLink>
+            </>
           )}
 
           {!user ? (
