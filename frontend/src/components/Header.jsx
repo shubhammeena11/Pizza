@@ -122,6 +122,7 @@ function Header() {
         )}
       </nav>
 
+       {user &&(   
       <div className="flex flex-1 items-center gap-2 min-w-55 sm:min-w-90">
         <form onSubmit={handleSearchSubmit} className="flex w-full items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1">
           <input
@@ -129,7 +130,7 @@ function Header() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search product"
-            className="w-full bg-transparent text-sm text-gray-900 focus:outline-none"
+            className="w-40 bg-transparent text-sm text-gray-900 focus:outline-none"
           />
           <button type="submit" className="text-gray-500 hover:text-orange-600">
             Search
@@ -212,6 +213,8 @@ function Header() {
           </svg>
         </button>
       </div>
+       )   }
+
     </div>
 
     {menuOpen && (

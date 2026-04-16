@@ -4,7 +4,7 @@ import logo from "../images/logo.webp";
 function Footer() {
   return (
     <footer className="bg-gray-800 text-white py-8">
-      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-20">
+      <div className="mx-auto max-w-screen-xll px-4 sm:px-6 lg:px-20">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Company Info */}
           <div className="col-span-1 text-center sm:text-left">
