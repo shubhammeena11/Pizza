@@ -15,7 +15,10 @@ function MyOrders() {
         setOrders(data.orders || []);
       } catch (err) {
         console.error(err);
-        setError("Unable to load your orders. Please login or try again.");
+        setError(
+          err.response?.data?.message ||
+            "Unable to load your orders. Please login or try again."
+        );
       } finally {
         setLoading(false);
       }
@@ -65,7 +68,7 @@ function MyOrders() {
               <div className="mt-6 rounded-3xl bg-white p-4 shadow-sm">
                 <h3 className="text-sm font-semibold text-gray-800">Items</h3>
                 <div className="mt-4 space-y-4">
-                  {order.items.map((item) => (
+                  {order.items?.map((item) => (
                     <div key={item.product ? item.product._id : item._id} className="flex items-center gap-4 rounded-2xl border border-gray-200 p-4">
                       <div className="flex-1">
                         <p className="font-semibold text-gray-900">{item.name}</p>

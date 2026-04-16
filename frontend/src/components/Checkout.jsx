@@ -39,14 +39,14 @@ function Checkout() {
         paymentMethod,
         source: "checkout page",
       });
-      setMessage("Order submitted successfully. Thank you!");
       dispatch(clearCart());
-      setTimeout(() => {
-        navigate("/orders/my");
-      }, 1200);
+      navigate("/orders/my");
+      return;
     } catch (err) {
       console.error(err);
-      setMessage("Failed to submit order. Please try again.");
+      setMessage(
+        err.response?.data?.message || "Failed to submit order. Please try again."
+      );
     } finally {
       setProcessing(false);
     }
