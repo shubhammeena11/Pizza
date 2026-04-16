@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import api, { logoutUser } from "../api.js";
-import logo from "../images/logo.png";
+import logo from "../images/logo.webp";
 import cartlogo from "../images/cart.png";
 
 function Header() {
@@ -45,6 +45,7 @@ function Header() {
         <div className="self-center h-10">
           <NavLink to="/">
             <img src={logo} alt="logo" className="h-full w-full object-cover" />
+            <span className = "font-bold text-xl" >Pizza</span>
           </NavLink>
         </div>
         {user && (
