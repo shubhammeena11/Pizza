@@ -48,7 +48,7 @@ function MyOrders() {
                   <p className="text-sm text-gray-600">Placed on {new Date(order.createdAt).toLocaleString()}</p>
                 </div>
                 <div className="rounded-2xl bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700">
-                  {order.status}
+                  {order.status && order.status !== "Pending" ? order.status : "Order placed successfully"}
                 </div>
               </div>
 
