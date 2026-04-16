@@ -3,6 +3,7 @@ import api from "../api.js";
 
 function MyOrders() {
   const [orders, setOrders] = useState([]);
+  const [expandedOrders, setExpandedOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -21,6 +22,14 @@ function MyOrders() {
       if (rankA !== rankB) return rankA - rankB;
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
+
+  const toggleOrderExpansion = (orderId) => {
+    setExpandedOrders((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
+    );
+  };
+
+  const isOrderExpanded = (orderId) => expandedOrders.includes(orderId);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -82,67 +91,86 @@ function MyOrders() {
             </div>
           )}
           <div className="mt-8 space-y-6">
-            {orders.map((order) => (
-            <div key={order._id} className="rounded-3xl border border-gray-200 p-6 shadow-sm">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm text-gray-500">Order ID: {order._id}</p>
-                  <p className="text-sm text-gray-600">Placed on {new Date(order.createdAt).toLocaleString()}</p>
-                </div>
-                <div className="rounded-2xl bg-green-50 px-4 py-2 text-sm font-semibold text-green-700">
-                  {order.status && order.status !== "Pending" ? order.status : "Order placed successfully"}
-                </div>
-              </div>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl bg-gray-50 p-4">
-                  <p className="text-sm font-semibold text-gray-700">Shipping Address</p>
-                  <p className="mt-2 text-sm text-gray-600 whitespace-pre-line">{order.address}</p>
-                </div>
-                <div className="rounded-2xl bg-gray-50 p-4">
-                  <p className="text-sm font-semibold text-gray-700">Order Summary</p>
-                  <p className="mt-2 text-sm text-gray-600">Total: ₹{order.total}</p>
-                  <p className="mt-1 text-sm text-gray-600">Payment: {order.paymentMethod}</p>
-                  <p className="mt-1 text-sm text-gray-600">Source: {order.source}</p>
-                </div>
-              </div>
-
-              <div className="mt-6 rounded-3xl bg-white p-4 shadow-sm">
-                <h3 className="text-sm font-semibold text-gray-800">Items</h3>
-                <div className="mt-4 space-y-4">
-                  {order.items?.map((item) => (
-                    <div key={item.product ? item.product._id : item._id} className="flex items-center gap-4 rounded-2xl border border-gray-200 p-4">
-                      <div className="flex-1">
-                        <p className="font-semibold text-gray-900">{item.name}</p>
-                        <p className="text-sm text-gray-600">Size: {item.size}</p>
-                        <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
-                      </div>
-                      <div className="text-right text-sm font-semibold text-gray-900">₹{item.price * item.quantity}</div>
+            {orders.map((order) => {
+              const expanded = isOrderExpanded(order._id);
+              return (
+                <div key={order._id} className="rounded-3xl border border-gray-200 p-6 shadow-sm">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-sm text-gray-500">Order ID: {order._id}</p>
+                      <p className="text-sm text-gray-600">Status: {formatStatus(order.status)}</p>
+                      {(order.status === "Order packed" || order.status === "Order delivered") && (
+                        <p className="text-sm text-gray-600">Packed time: {new Date(order.updatedAt).toLocaleString()}</p>
+                      )}
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-                {order.status === "Order packed" || order.status === "Order delivered" || order.status === "Order cancelled" ? (
-                  <div className="rounded-full border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-600">
-                    {order.status === "Order packed" && "Order is already packed. Cancellation is not available."}
-                    {order.status === "Order delivered" && "Order is already delivered. Cancellation is not available."}
-                    {order.status === "Order cancelled" && "Order has been cancelled."}
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-2xl bg-green-50 px-4 py-2 text-sm font-semibold text-green-700">
+                        {order.status && order.status !== "Pending" ? order.status : "Order placed successfully"}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => toggleOrderExpansion(order._id)}
+                        className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                      >
+                        {expanded ? "View Less" : "View More"}
+                      </button>
+                    </div>
                   </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => handleCancelOrder(order._id)}
-                    className="rounded-full border border-red-500 bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
-                  >
-                    Cancel Order
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+
+                  {expanded && (
+                    <>
+                      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                        <div className="rounded-2xl bg-gray-50 p-4">
+                          <p className="text-sm font-semibold text-gray-700">Shipping Address</p>
+                          <p className="mt-2 text-sm text-gray-600 whitespace-pre-line">{order.address}</p>
+                        </div>
+                        <div className="rounded-2xl bg-gray-50 p-4">
+                          <p className="text-sm font-semibold text-gray-700">Order Summary</p>
+                          <p className="mt-2 text-sm text-gray-600">Total: ₹{order.total}</p>
+                          <p className="mt-1 text-sm text-gray-600">Payment: {order.paymentMethod}</p>
+                          <p className="mt-1 text-sm text-gray-600">Source: {order.source}</p>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 rounded-3xl bg-white p-4 shadow-sm">
+                        <h3 className="text-sm font-semibold text-gray-800">Items</h3>
+                        <div className="mt-4 space-y-4">
+                          {order.items?.map((item) => (
+                            <div key={item.product ? item.product._id : item._id} className="flex items-center gap-4 rounded-2xl border border-gray-200 p-4">
+                              <div className="flex-1">
+                                <p className="font-semibold text-gray-900">{item.name}</p>
+                                <p className="text-sm text-gray-600">Size: {item.size}</p>
+                                <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                              </div>
+                              <div className="text-right text-sm font-semibold text-gray-900">₹{item.price * item.quantity}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                        {order.status === "Order packed" || order.status === "Order delivered" || order.status === "Order cancelled" ? (
+                          <div className="rounded-full border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-600">
+                            {order.status === "Order packed" && "Order is already packed. Cancellation is not available."}
+                            {order.status === "Order delivered" && "Order is already delivered. Cancellation is not available."}
+                            {order.status === "Order cancelled" && "Order has been cancelled."}
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleCancelOrder(order._id)}
+                            className="rounded-full border border-red-500 bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
+                          >
+                            Cancel Order
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </>
       )}
     </div>

@@ -5,6 +5,7 @@ function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [expandedOrders, setExpandedOrders] = useState([]);
   const [deliveredCount, setDeliveredCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -24,6 +25,14 @@ function AdminDashboard() {
       if (rankA !== rankB) return rankA - rankB;
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
+
+  const toggleOrderExpansion = (orderId) => {
+    setExpandedOrders((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
+    );
+  };
+
+  const isOrderExpanded = (orderId) => expandedOrders.includes(orderId);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -45,6 +54,7 @@ function AdminDashboard() {
 
   const loadUserOrders = async (user) => {
     setSelectedUser(user);
+    setExpandedOrders([]);
     setLoading(true);
     setError("");
     setNotice("");
@@ -132,9 +142,10 @@ function AdminDashboard() {
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900">{user.name}</h2>
                     <p className="text-sm text-gray-600">{user.email}</p>
+                    <p className="mt-1 text-sm text-gray-600">Total orders: {user.totalOrderCount ?? 0}</p>
                   </div>
                   <span className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white">
-                    {user.openOrderCount} open orders
+                    {user.openOrderCount ?? 0} open orders
                   </span>
                 </div>
               </button>
@@ -168,59 +179,79 @@ function AdminDashboard() {
             {orders.length === 0 ? (
               <div className="rounded-3xl border border-gray-200 bg-gray-50 p-6 text-gray-600">This user has no orders yet.</div>
             ) : (
-              orders.map((order) => (
-                <div key={order._id} className="rounded-3xl border border-gray-200 p-6 shadow-sm">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="text-sm text-gray-500">Order ID: {order._id}</p>
-                      <p className="text-sm text-gray-600">Placed on {new Date(order.createdAt).toLocaleString()}</p>
-                    </div>
-                    <div className="rounded-2xl bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700">
-                      {formatStatus(order.status)}
-                    </div>
-                  </div>
-
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl bg-gray-50 p-4">
-                      <p className="text-sm font-semibold text-gray-700">Shipping Address</p>
-                      <p className="mt-2 text-sm text-gray-600 whitespace-pre-line">{order.address}</p>
-                    </div>
-                    <div className="rounded-2xl bg-gray-50 p-4">
-                      <p className="text-sm font-semibold text-gray-700">Order Info</p>
-                      <p className="mt-2 text-sm text-gray-600">Payment: {order.paymentMethod}</p>
-                      <p className="mt-1 text-sm text-gray-600">Source: {order.source}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 rounded-3xl bg-white p-4 shadow-sm">
-                    <h3 className="text-sm font-semibold text-gray-800">Ordered Items</h3>
-                    <div className="mt-4 space-y-4">
-                      {order.items?.map((item) => (
-                        <div key={item.product ? item.product._id : item._id} className="flex items-center gap-4 rounded-2xl border border-gray-200 p-4">
-                          <div className="flex-1">
-                            <p className="font-semibold text-gray-900">{item.name}</p>
-                            <p className="text-sm text-gray-600">Size: {item.size}</p>
-                            <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
-                          </div>
-                          <div className="text-right text-sm font-semibold text-gray-900">₹{item.price * item.quantity}</div>
+              orders.map((order) => {
+                const expanded = isOrderExpanded(order._id);
+                return (
+                  <div key={order._id} className="rounded-3xl border border-gray-200 p-6 shadow-sm">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-sm text-gray-500">Order ID: {order._id}</p>
+                        <p className="text-sm text-gray-600">Status: {formatStatus(order.status)}</p>
+                        {(order.status === "Order packed" || order.status === "Order delivered") && (
+                          <p className="text-sm text-gray-600">Packed time: {new Date(order.updatedAt).toLocaleString()}</p>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-2xl bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700">
+                          {formatStatus(order.status)}
                         </div>
-                      ))}
+                        <button
+                          type="button"
+                          onClick={() => toggleOrderExpansion(order._id)}
+                          className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                        >
+                          {expanded ? "View Less" : "View More"}
+                        </button>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-                    {order.status !== "Order delivered" && order.status !== "Order cancelled" ? (
-                      <button
-                        type="button"
-                        onClick={() => handleStatusChange(order._id, order.status === "Order packed" ? "Order delivered" : "Order packed")}
-                        className="rounded-full border border-orange-500 bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
-                      >
-                        {order.status === "Order packed" ? "Mark Delivered" : "Mark Packed"}
-                      </button>
-                    ) : null}
+                    {expanded && (
+                      <>
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-2xl bg-gray-50 p-4">
+                            <p className="text-sm font-semibold text-gray-700">Shipping Address</p>
+                            <p className="mt-2 text-sm text-gray-600 whitespace-pre-line">{order.address}</p>
+                          </div>
+                          <div className="rounded-2xl bg-gray-50 p-4">
+                            <p className="text-sm font-semibold text-gray-700">Order Info</p>
+                            <p className="mt-2 text-sm text-gray-600">Payment: {order.paymentMethod}</p>
+                            <p className="mt-1 text-sm text-gray-600">Source: {order.source}</p>
+                            <p className="mt-1 text-sm text-gray-600">Total: ₹{order.total}</p>
+                          </div>
+                        </div>
+
+                        <div className="mt-6 rounded-3xl bg-white p-4 shadow-sm">
+                          <h3 className="text-sm font-semibold text-gray-800">Ordered Items</h3>
+                          <div className="mt-4 space-y-4">
+                            {order.items?.map((item) => (
+                              <div key={item.product ? item.product._id : item._id} className="flex items-center gap-4 rounded-2xl border border-gray-200 p-4">
+                                <div className="flex-1">
+                                  <p className="font-semibold text-gray-900">{item.name}</p>
+                                  <p className="text-sm text-gray-600">Size: {item.size}</p>
+                                  <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                                </div>
+                                <div className="text-right text-sm font-semibold text-gray-900">₹{item.price * item.quantity}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                          {order.status !== "Order delivered" && order.status !== "Order cancelled" && (
+                            <button
+                              type="button"
+                              onClick={() => handleStatusChange(order._id, order.status === "Order packed" ? "Order delivered" : "Order packed")}
+                              className="rounded-full border border-orange-500 bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+                            >
+                              {order.status === "Order packed" ? "Mark Delivered" : "Mark Packed"}
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </>

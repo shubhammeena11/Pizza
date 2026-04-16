@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { Order } from "../models/index.js";
+import { Order, User } from "../models/index.js";
 import CustomErrorHandler from "../services/CustomErrorHandler.js";
 
 const STATUS_PLACED = "Order placed successfully";
@@ -69,34 +69,46 @@ const orderController = {
 
   async getUsersWithOrderCount(req, res, next) {
     try {
-      const users = await Order.aggregate([
-        {
-          $match: {
-            status: { $nin: [STATUS_DELIVERED, STATUS_CANCELLED] },
-          },
-        },
-        {
-          $group: {
-            _id: "$user",
-            openOrderCount: { $sum: 1 },
-          },
-        },
+      const users = await User.aggregate([
         {
           $lookup: {
-            from: "users",
-            localField: "_id",
-            foreignField: "_id",
-            as: "userInfo",
+            from: "orders",
+            let: { userId: "$_id" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$user", "$$userId"] } } },
+              {
+                $group: {
+                  _id: null,
+                  openOrderCount: {
+                    $sum: {
+                      $cond: [
+                        { $in: ["$status", [STATUS_DELIVERED, STATUS_CANCELLED]] },
+                        0,
+                        1,
+                      ],
+                    },
+                  },
+                  totalOrderCount: { $sum: 1 },
+                },
+              },
+            ],
+            as: "orderStats",
           },
         },
-        { $unwind: "$userInfo" },
+        {
+          $addFields: {
+            openOrderCount: { $ifNull: [{ $arrayElemAt: ["$orderStats.openOrderCount", 0] }, 0] },
+            totalOrderCount: { $ifNull: [{ $arrayElemAt: ["$orderStats.totalOrderCount", 0] }, 0] },
+          },
+        },
         {
           $project: {
             _id: 0,
             userId: "$_id",
-            name: "$userInfo.name",
-            email: "$userInfo.email",
+            name: 1,
+            email: 1,
             openOrderCount: 1,
+            totalOrderCount: 1,
           },
         },
         { $sort: { openOrderCount: -1, name: 1 } },
@@ -113,10 +125,7 @@ const orderController = {
 
     try {
       const [orders, deliveredCount] = await Promise.all([
-        Order.find({
-          user: id,
-          status: { $nin: [STATUS_DELIVERED, STATUS_CANCELLED] },
-        })
+        Order.find({ user: id })
           .populate("items.product", "name price size")
           .sort({ createdAt: -1 }),
         Order.countDocuments({ user: id, status: STATUS_DELIVERED }),
