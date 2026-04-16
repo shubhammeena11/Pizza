@@ -122,7 +122,6 @@ function Header() {
         )}
       </nav>
 
-       {user &&(   
       <div className="flex flex-1 items-center gap-2 min-w-55 sm:min-w-90">
         <form onSubmit={handleSearchSubmit} className="flex w-full items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1">
           <input
@@ -213,7 +212,6 @@ function Header() {
           </svg>
         </button>
       </div>
-       )   }
 
     </div>
 
