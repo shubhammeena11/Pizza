@@ -40,8 +40,14 @@ function Header() {
 
   return (
     <>
-    <div className="px-4 sm:px-6 lg:px-20 flex flex-wrap justify-between items-center fixed top-0 left-0 right-0 bg-white shadow-md z-10">
+    <div className="h-16 px-4 sm:px-6 lg:px-20 flex flex-wrap justify-between items-center fixed top-0 left-0 right-0 bg-white shadow-md z-10">
       <div className="flex items-center gap-4">
+     
+        <NavLink to="/" className="flex items-center gap-2 h-10">
+          <img src={logo} alt="logo" className="h-10 w-10 object-cover" />
+          <span className="font-bold text-xl">Pizza</span>
+        </NavLink>
+
         {user && (
           <NavLink
             to="/profile"
@@ -54,21 +60,19 @@ function Header() {
           </NavLink>
         )}
 
-        <NavLink to="/" className="flex items-center gap-2 h-10">
-          <img src={logo} alt="logo" className="h-10 w-10 object-cover" />
-          <span className="font-bold text-xl">Pizza</span>
-        </NavLink>
       </div>
 
       <nav className="hidden sm:flex gap-6 items-center text-black">
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
-          }
-        >
-          Home
-        </NavLink>
+        {(isAdmin || isCustomer) && (
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+            }
+          >
+            Home
+          </NavLink>
+        )}
       </nav>
 
       <div className="flex items-center gap-2">
@@ -166,15 +170,17 @@ function Header() {
     {menuOpen && (
       <div className="sm:hidden fixed top-20 left-0 right-0 z-10 bg-white border-t border-gray-200 shadow-sm">
         <nav className="flex flex-col gap-2 p-4 text-black">
-          <NavLink
-            to="/"
-            onClick={() => setMenuOpen(false)}
-            className={({ isActive }) =>
-              `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
-            }
-          >
-            Home
-          </NavLink>
+          {(isAdmin || isCustomer) && (
+            <NavLink
+              to="/"
+              onClick={() => setMenuOpen(false)}
+              className={({ isActive }) =>
+                `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+              }
+            >
+              Home
+            </NavLink>
+          )}
 
           {!user ? (
             <NavLink
@@ -190,8 +196,6 @@ function Header() {
         </nav>
       </div>
     )}
-
-    <div className="h-20"></div>
     </>
   );
 }
