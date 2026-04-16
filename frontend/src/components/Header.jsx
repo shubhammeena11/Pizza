@@ -275,6 +275,18 @@ function Header() {
               >
                 My Orders
               </NavLink>
+              <NavLink
+                to="/cart"
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `w-full text-left rounded-xl px-3 py-2 hover:bg-gray-100 ${isActive ? "bg-orange-50 text-orange-600 font-bold" : "text-gray-800"}`
+                }
+              >
+                <div className="flex items-center gap-2">
+                  <img src={cartlogo} alt="cart" className="h-5 w-5 object-contain" />
+                  Cart ({cartItems})
+                </div>
+              </NavLink>
             </>
           )}
 

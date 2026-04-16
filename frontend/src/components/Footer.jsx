@@ -14,7 +14,7 @@ function Footer() {
                 alt="logo"
                 className="h-8 w-16 mr-0 mb-3 rounded-full bg-center bg-cover sm:mr-2 sm:mb-0"
               />
-              <span className="text-xl font-bold">ERP System</span>
+              <span className="text-xl font-bold">Pizza Service</span>
             </div>
             <p className="text-gray-300 text-sm">
               Your one-stop solution for managing products and orders efficiently.
