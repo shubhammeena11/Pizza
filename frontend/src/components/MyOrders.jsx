@@ -27,6 +27,13 @@ function MyOrders() {
     loadOrders();
   }, []);
 
+  const formatStatus = (status) => {
+    if (!status || status === "Pending") {
+      return "Order placed successfully";
+    }
+    return status;
+  };
+
   return (
     <div className="mx-4 sm:mx-6 lg:mx-20 my-8 rounded-3xl bg-white shadow-xl p-8">
       <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
@@ -47,7 +54,7 @@ function MyOrders() {
                   <p className="text-sm text-gray-500">Order ID: {order._id}</p>
                   <p className="text-sm text-gray-600">Placed on {new Date(order.createdAt).toLocaleString()}</p>
                 </div>
-                <div className="rounded-2xl bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700">
+                <div className="rounded-2xl bg-green-50 px-4 py-2 text-sm font-semibold text-green-700">
                   {order.status && order.status !== "Pending" ? order.status : "Order placed successfully"}
                 </div>
               </div>

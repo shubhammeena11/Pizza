@@ -1,7 +1,11 @@
 import Joi from "joi";
-import mongoose from "mongoose";
 import { Order } from "../models/index.js";
 import CustomErrorHandler from "../services/CustomErrorHandler.js";
+
+const STATUS_PLACED = "Order placed successfully";
+const STATUS_PACKED = "Order packed";
+const STATUS_DELIVERED = "Order delivered";
+const STATUS_CANCELLED = "Order cancelled";
 
 const orderController = {
   async checkout(req, res, next) {
@@ -39,7 +43,7 @@ const orderController = {
       address,
       paymentMethod,
       source: source || "cart page",
-      status: "Order placed successfully",
+      status: STATUS_PLACED,
     };
 
     try {
@@ -58,6 +62,130 @@ const orderController = {
         .sort({ createdAt: -1 });
 
       res.json({ orders });
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async getUsersWithOrderCount(req, res, next) {
+    try {
+      const users = await Order.aggregate([
+        {
+          $match: {
+            status: { $nin: [STATUS_DELIVERED, STATUS_CANCELLED] },
+          },
+        },
+        {
+          $group: {
+            _id: "$user",
+            openOrderCount: { $sum: 1 },
+          },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "_id",
+            foreignField: "_id",
+            as: "userInfo",
+          },
+        },
+        { $unwind: "$userInfo" },
+        {
+          $project: {
+            _id: 0,
+            userId: "$_id",
+            name: "$userInfo.name",
+            email: "$userInfo.email",
+            openOrderCount: 1,
+          },
+        },
+        { $sort: { openOrderCount: -1, name: 1 } },
+      ]);
+
+      res.json({ users });
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async getOrdersByUser(req, res, next) {
+    const { id } = req.params;
+
+    try {
+      const [orders, deliveredCount] = await Promise.all([
+        Order.find({
+          user: id,
+          status: { $nin: [STATUS_DELIVERED, STATUS_CANCELLED] },
+        })
+          .populate("items.product", "name price size")
+          .sort({ createdAt: -1 }),
+        Order.countDocuments({ user: id, status: STATUS_DELIVERED }),
+      ]);
+
+      res.json({ orders, deliveredCount });
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async updateOrderStatus(req, res, next) {
+    const { id } = req.params;
+    const schema = Joi.object({
+      status: Joi.string().valid(STATUS_PACKED, STATUS_DELIVERED).required(),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return next(error);
+    }
+
+    try {
+      const order = await Order.findById(id);
+      if (!order) {
+        return next(CustomErrorHandler.notFound("Order not found"));
+      }
+
+      if (req.body.status === STATUS_PACKED) {
+        if (order.status === STATUS_CANCELLED || order.status === STATUS_DELIVERED) {
+          return next(CustomErrorHandler.badRequest("Cannot pack this order."));
+        }
+        order.status = STATUS_PACKED;
+      }
+
+      if (req.body.status === STATUS_DELIVERED) {
+        if (order.status !== STATUS_PACKED) {
+          return next(CustomErrorHandler.badRequest("Order must be packed before it can be delivered."));
+        }
+        order.status = STATUS_DELIVERED;
+      }
+
+      await order.save();
+      res.json({ msg: "Order status updated", order });
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async cancelOrder(req, res, next) {
+    const { id } = req.params;
+
+    try {
+      const order = await Order.findById(id);
+      if (!order) {
+        return next(CustomErrorHandler.notFound("Order not found"));
+      }
+
+      if (order.status === STATUS_PACKED || order.status === STATUS_DELIVERED) {
+        return next(CustomErrorHandler.badRequest("Order is packed now you can't cancel the order."));
+      }
+
+      if (order.status === STATUS_CANCELLED) {
+        return next(CustomErrorHandler.badRequest("Order is already cancelled."));
+      }
+
+      order.status = STATUS_CANCELLED;
+      await order.save();
+      res.json({ msg: "Order cancelled", order });
     } catch (err) {
       return next(err);
     }
