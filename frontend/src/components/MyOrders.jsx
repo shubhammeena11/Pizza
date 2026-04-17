@@ -5,6 +5,7 @@ function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [expandedOrders, setExpandedOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [cancelingOrderId, setCancelingOrderId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
 
@@ -54,6 +55,7 @@ function MyOrders() {
 
   const handleCancelOrder = async (orderId) => {
     setNotice("");
+    setCancelingOrderId(orderId);
     try {
       await api.post(`/orders/${orderId}/cancel`);
       const { data } = await api.get("/orders/my");
@@ -62,6 +64,8 @@ function MyOrders() {
     } catch (err) {
       console.error(err);
       setNotice(err.response?.data?.message || "Unable to cancel the order.");
+    } finally {
+      setCancelingOrderId(null);
     }
   };
 
@@ -159,9 +163,20 @@ function MyOrders() {
                           <button
                             type="button"
                             onClick={() => handleCancelOrder(order._id)}
-                            className="rounded-full border border-red-500 bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
+                            disabled={cancelingOrderId === order._id}
+                            className={`rounded-full border border-red-500 bg-red-500 px-4 py-2 text-sm font-semibold text-white transition ${cancelingOrderId === order._id ? "cursor-not-allowed opacity-70" : "hover:bg-red-600"}`}
                           >
-                            Cancel Order
+                            {cancelingOrderId === order._id ? (
+                              <span className="inline-flex items-center gap-2">
+                                <svg className="h-4 w-4 animate-spin text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                </svg>
+                                Cancelling...
+                              </span>
+                            ) : (
+                              "Cancel Order"
+                            )}
                           </button>
                         )}
                       </div>
