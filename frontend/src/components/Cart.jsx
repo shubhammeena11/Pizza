@@ -73,7 +73,7 @@ function Cart() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex gap-4 sm:items-center">
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button
                   onClick={() => handleQuantityChange(item.product._id, item.quantity - 1)}
@@ -81,13 +81,18 @@ function Cart() {
                 >
                   -
                 </button>
+
+            <div className='gap-4'>
                 <span className="px-3 py-1 border-x border-gray-300">{item.quantity}</span>
+               
                 <button
                   onClick={() => handleQuantityChange(item.product._id, item.quantity + 1)}
                   className="px-3 py-1 text-gray-600 hover:bg-gray-100"
                 >
                   +
                 </button>
+            </div>
+             
               </div>
 
               <p className="font-semibold text-gray-900">₹{item.product.price * item.quantity}</p>
