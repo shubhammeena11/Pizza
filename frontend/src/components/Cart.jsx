@@ -94,7 +94,9 @@ function Cart() {
               </div>
 
             <div className='gap-4'>
-              <p className="font-semibold text-gray-900">₹{item.product.price * item.quantity}</p>
+              <div class="flex items-center">
+              <p className="font-semibold  text-gray-900">₹{item.product.price * item.quantity}</p>
+              </div>
 
               <button
                 onClick={() => handleRemoveItem(item.product._id)}
