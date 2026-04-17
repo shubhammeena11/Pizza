@@ -94,7 +94,7 @@ function Cart() {
               </div>
 
             <div className='gap-4 flex'>
-              <div class="flex items-center h-9
+              <div className="flex items-center h-9
               ">
               <p className="font-semibold  text-gray-900">₹{item.product.price * item.quantity}</p>
               </div>
