@@ -74,7 +74,7 @@ function Cart() {
             </div>
 
             <div className="flex gap-4 sm:items-center">
-              <div className="flex items-center border border-gray-300 rounded-lg">
+              <div className="flex gap-4 sm:justify-center border border-gray-300 rounded-lg">
                 <button
                   onClick={() => handleQuantityChange(item.product._id, item.quantity - 1)}
                   className="px-3 py-1 text-gray-600 hover:bg-gray-100"
