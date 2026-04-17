@@ -73,7 +73,7 @@ function Cart() {
               </div>
             </div>
 
-            <div className="flex gap-4 sm:justify-center">
+            <div className="flex sm:gap-4 justify-between">
 
               <div className="flex gap-4 border border-gray-300 rounded-lg">
                 <button
