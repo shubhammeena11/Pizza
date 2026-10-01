@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerController, loginController, userController, productController, refreshController, dashboardController } from '../controllers/index.js';
+import { registerController, loginController, userController, productController, refreshController, dashboardController, favoriteController } from '../controllers/index.js';
 import orderController from '../controllers/orderController.js';
 import auth from '../middlewares/auth.js';
 import admin from '../middlewares/admin.js';
@@ -25,5 +25,8 @@ router.patch('/orders/:id/status', auth, admin, orderController.updateOrderStatu
 router.post('/orders/:id/cancel', auth, orderController.cancelOrder);
 router.get('/orders', auth, admin, orderController.getAllOrders);
 router.get('/dashboard', auth, admin, dashboardController.dashboard);
+router.post('/favorites/:id', auth, favoriteController.add);
+router.delete('/favorites/:id', auth, favoriteController.remove);
+router.get('/favorites', auth, favoriteController.getAll);
 
 export default router;

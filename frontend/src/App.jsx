@@ -13,8 +13,10 @@ import AdminDashboard from "./components/AdminDashboard.jsx";
 import MyOrders from "./components/MyOrders.jsx";
 import Profile from "./components/Profile.jsx";
 import Login from "./components/Login";
+import FavoriteItems from "./components/FavoriteItems.jsx";
 import api from "./api.js";
 import { setUser, logout } from "./redux/authSlice";
+import { setFavorites } from "./redux/favoriteSlice";
  
 function App() {
   const dispatch = useDispatch();
@@ -29,6 +31,8 @@ function App() {
       try {
         const res = await api.get("/me");
         dispatch(setUser(res.data));
+        const favoritesRes = await api.get("/favorites");
+dispatch(setFavorites(favoritesRes.data));
       } catch (err) {
         console.error("Failed to restore user after refresh:", err);
         dispatch(logout());
@@ -54,6 +58,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/favorite" element={<FavoriteItems />} />
           </Routes>
         </div>
         <Footer />

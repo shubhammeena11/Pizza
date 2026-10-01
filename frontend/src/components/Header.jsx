@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import api, { logoutUser } from "../api.js";
 import logo from "../images/logo.webp";
@@ -12,6 +12,7 @@ function Header() {
   const user = useSelector((state) => state.auth.user);
   const cartItems = useSelector((state) => state.cart.totalItems);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = async () => {
     try {
@@ -25,15 +26,26 @@ function Header() {
   };
 
   const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    const trimmed = searchQuery.trim();
+  event.preventDefault();
+
+  const trimmed = searchQuery.trim();
+
+  if (location.pathname === "/favorite") {
+    if (trimmed.length === 0) {
+      navigate("/favorite");
+    } else {
+      navigate(`/favorite?search=${encodeURIComponent(trimmed)}`);
+    }
+  } else {
     if (trimmed.length === 0) {
       navigate("/product");
     } else {
       navigate(`/product?search=${encodeURIComponent(trimmed)}`);
     }
-    setMenuOpen(false);
-  };
+  }
+
+  setMenuOpen(false);
+};
 
   const isAdmin = user?.role === "admin";
   const isCustomer = user?.role === "customer";
@@ -88,6 +100,14 @@ function Header() {
               }
             >
               My Orders
+            </NavLink>
+            <NavLink
+              to="/favorite"
+              className={({ isActive }) =>
+                `min-w-15 text-center hover:text-orange-600 ${isActive ? "text-orange-500 font-bold" : ""}`
+              }
+            >
+              Favorite Items
             </NavLink>
           </>
         )}

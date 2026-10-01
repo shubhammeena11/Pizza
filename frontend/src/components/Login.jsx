@@ -3,6 +3,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import api from "../api.js";
 import { setUser } from "../redux/authSlice.js";
+import { setFavorites } from "../redux/favoriteSlice.js";
+
 
 function Login() {
   const [isRegister, setIsRegister] = useState(false);
@@ -48,7 +50,12 @@ function Login() {
 
       const userRes = await api.get("/me");
       dispatch(setUser(userRes.data));
+
+      const favoritesRes = await api.get("/favorites");
+      dispatch(setFavorites(favoritesRes.data));
+
       navigate("/");
+      
     } catch (err) {
       setError(err.response?.data?.message || "Login failed.");
       setLoading(false);

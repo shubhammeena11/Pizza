@@ -1,18 +1,36 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { addToCart } from '../redux/cartSlice'
-import api from '../api.js'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { addToCart } from "../redux/cartSlice";
+import api from "../api.js";
+import { toggleFavorite } from "../redux/favoriteSlice.js";
 
-function Card({product, onProductDeleted}) {
+function Card({ product, onProductDeleted }) {
   const user = useSelector((state) => state.auth.user);
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === "admin";
   const dispatch = useDispatch();
   const [isAnimating, setIsAnimating] = useState(false);
-  const [loginPrompt, setLoginPrompt] = useState('');
+  const [loginPrompt, setLoginPrompt] = useState("");
+
+  const favorites = useSelector((state) => state.favorite.items);
+
+  const isFavorite = favorites.some((item) => item._id === product._id);
+  const handleFavorite = async () => {
+    try {
+      if (isFavorite) {
+        await api.delete(`/favorites/${product._id}`);
+      } else {
+        await api.post(`/favorites/${product._id}`);
+      }
+
+      dispatch(toggleFavorite(product));
+    } catch (err) {
+      console.error("Favorite action failed:", err);
+    }
+  };
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this product?')) {
+    if (!window.confirm("Are you sure you want to delete this product?")) {
       return;
     }
 
@@ -20,15 +38,15 @@ function Card({product, onProductDeleted}) {
       await api.delete(`/products/${product._id}`);
       if (onProductDeleted) onProductDeleted(product._id);
     } catch (err) {
-      console.error('Delete failed:', err);
-      alert('Failed to delete product.');
+      console.error("Delete failed:", err);
+      alert("Failed to delete product.");
     }
   };
 
   const handleAddToCart = () => {
     if (!user) {
-      setLoginPrompt('Please login first to add this product to your cart.');
-      window.setTimeout(() => setLoginPrompt(''), 3800);
+      setLoginPrompt("Please login first to add this product to your cart.");
+      window.setTimeout(() => setLoginPrompt(""), 3800);
       return;
     }
 
@@ -39,60 +57,68 @@ function Card({product, onProductDeleted}) {
 
   return (
     <>
-      <div className='relative w-full my-4 overflow-hidden rounded-3xl bg-white shadow-lg'>
-      <div className="flex justify-center items-center mt-4">
-  <div className="w-40 h-40 rounded-full overflow-hidden">
-    <img
-      src={product.image}
-      alt={product.name}
-      className="w-full h-full object-cover object-center"
-    />
-  </div>
-</div>
+      <div className="relative w-full my-4 overflow-hidden rounded-3xl bg-white shadow-lg">
+       <button
+  onClick={handleFavorite}
+  className="absolute top-2 left-2 z-9 text-2xl"
+>
+  {isFavorite ? "❤️" : "🤍"}
+</button>
+        <div className="flex justify-center items-center mt-4">
+          <div className="w-40 h-40 rounded-full overflow-hidden">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+        </div>
 
-{isAnimating && (
-  <div className="absolute bottom-14 right-4 z-20 pointer-events-none">
-    <div className="w-16 h-16 rounded-full overflow-hidden">
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-full object-cover object-center"
-        style={{
-          animation: 'flyToCart 0.6s ease-in-out forwards'
-        }}
-      />
-    </div>
-  </div>
-)}
-        
+        {isAnimating && (
+          <div className="absolute bottom-14 right-4 z-20 pointer-events-none">
+            <div className="w-16 h-16 rounded-full overflow-hidden">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover object-center"
+                style={{
+                  animation: "flyToCart 0.6s ease-in-out forwards",
+                }}
+              />
+            </div>
+          </div>
+        )}
+
         {isAdmin && (
-          <div className='absolute top-2 right-2 flex gap-2'>
+          <div className="absolute top-2 right-2 flex gap-2">
             <Link
               to={`/product/edit/${product._id}`}
-              className='rounded-lg bg-blue-500 px-3 py-1 text-xs font-semibold text-white transition hover:bg-blue-600'
+              className="rounded-lg bg-blue-500 px-3 py-1 text-xs font-semibold text-white transition hover:bg-blue-600"
             >
               Edit
             </Link>
             <button
               onClick={handleDelete}
-              className='rounded-lg bg-red-500 px-3 py-1 text-xs font-semibold text-white transition hover:bg-red-600'
+              className="rounded-lg bg-red-500 px-3 py-1 text-xs font-semibold text-white transition hover:bg-red-600"
             >
               Delete
             </button>
           </div>
         )}
 
-        <div className='flex flex-col items-center'>
-          <h2 className='font-semibold text-gray-800'>{product.name}</h2>
-          <span className='bg-gray-200 rounded-full px-2 mt-1 text-xs'>
+        <div className="flex flex-col items-center">
+          <h2 className="font-semibold text-gray-800">{product.name}</h2>
+          <span className="bg-gray-200 rounded-full px-2 mt-1 text-xs">
             {product.size}
           </span>
-          <div className='flex flex-col gap-2 w-full mt-2'>
-            <div className='flex items-center justify-between w-full px-7'>
-              <span className='font-medium text-gray-900'>₹{product.price}</span>
+          <div className="flex flex-col gap-2 w-full mt-2">
+            <div className="flex items-center justify-between w-full px-7">
+              <span className="font-medium text-gray-900">
+                ₹{product.price}
+              </span>
               <button
                 onClick={handleAddToCart}
-                className='bg-orange-400 text-white font-medium flex items-center justify-center gap-1 px-3 rounded-full text-xs hover:bg-orange-500 transition'
+                className="bg-orange-400 text-white font-medium flex items-center justify-center gap-1 px-3 rounded-full text-xs hover:bg-orange-500 transition"
               >
                 ADD
               </button>
@@ -101,18 +127,24 @@ function Card({product, onProductDeleted}) {
         </div>
 
         {loginPrompt && (
-          <div className='absolute left-1/2 bottom-3 z-10 w-[calc(100%-1rem)] -translate-x-1/2 rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700 shadow-sm'>
-            <p className='font-semibold'>Please login first</p>
-            <p className='text-[11px] text-red-600'>To save items, login before adding products to your cart.</p>
-            <div className='mt-2 flex items-center gap-2'>
-              <Link to='/login' className='text-xs font-semibold text-orange-600 hover:text-orange-700'>Go to Login</Link>
+          <div className="absolute left-1/2 bottom-3 z-10 w-[calc(100%-1rem)] -translate-x-1/2 rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700 shadow-sm">
+            <p className="font-semibold">Please login first</p>
+            <p className="text-[11px] text-red-600">
+              To save items, login before adding products to your cart.
+            </p>
+            <div className="mt-2 flex items-center gap-2">
+              <Link
+                to="/login"
+                className="text-xs font-semibold text-orange-600 hover:text-orange-700"
+              >
+                Go to Login
+              </Link>
             </div>
           </div>
         )}
       </div>
-      
     </>
-  )
+  );
 }
 
-export default Card
+export default Card;
